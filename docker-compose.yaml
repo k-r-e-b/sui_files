@@ -1,0 +1,26 @@
+---
+version: "3.9"
+services:
+  fullnode:
+    image: mysten/sui-node:stable
+    ports:
+    - "8080:8080"
+    - "9000:9000"
+    - "9184:9184"
+    expose:
+    - "8080"
+    - "9000"
+    - "9184"
+    volumes:
+    - ./fullnode-template.yaml:/sui/fullnode.yaml:ro
+    - ./genesis.blob:/sui/genesis.blob:ro
+    - suidb:/sui/suidb:rw
+    command: ["/usr/local/bin/sui-node", "--config-path", "fullnode.yaml"]
+    healthcheck:
+      test: ./healthcheck.sh
+      interval: 60s
+      retries: 5
+      start_period: 20s
+      timeout: 10s
+volumes:
+  suidb:
